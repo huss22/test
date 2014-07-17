@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link href="http://expenseapp.domytacreturn.com.au/src/ajaxuploader.css" rel="stylesheet" />
+        <script type="text/javascript" src="http://expenseapp.domytacreturn.com.au/src/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="http://expenseapp.domytacreturn.com.au/src/ajaxuploader.js"></script>
+        <script type="text/javascript">
+            $(window).ready(function(){
+                 $(".smalluploader").SmallFileUploader({
+                    endpoint: "http://expenseapp.domytacreturn.com.au/src/ajaxuploader.php",
+                    maxAllowedFiles: 3,
+                    maxFileSize: 1024 * 1024 * 1,
+                    allowedTypes: ["jpeg", "jpg", "png", "gif", "pdf"],
+                    onInit: function(uploader){
+                        console.log("Uploader initialized");
+                    },
+                    onEnqueue: function(file){
+                        console.log("File Enqueued");
+                    },
+                    onDequeue: function(file) {
+                        console.log("File Dequeued");
+                    },
+                    onClearAll: function(uploader){
+                        console.log("Queue Cleared");
+                    },
+                    onUploadStart: function(uploader){
+                        console.log("Upload started");
+                        return true;
+                    },
+                    onUploadFail: function(file){
+                        console.log("File Failed");
+                    },
+                    onUploadComplete: function(file){
+                        console.log("File Complete");
+                    },
+                    onAllComplete: function(uploader){
+                        console.log("All Complete");
+                    }
+                });
+            });
+         </script>
+        <style type="text/css">
+            html { overflow-y: scroll; }
+            h1, h2 { margin: 15px 0; }
+            #wrapper { width: 600px; margin: 20px auto; overflow: hidden; }
+        </style>
+    </head>
+    <body>
+        <div id="wrapper">   
+            <div class="smalluploader">
+                <div class="dragspace hidden">
+                    <p class="zonemessage">Drag your files in here</p>
+                    <p class="message">unlimited number of files allowed </p>
+                </div>
+                <div  id = 'hehe' class="buttons">
+                </div>
+                <div class="uploadspace hidden"></div>
+                <div class="buttons">
+                    <a class="startbutton redbutton hidden">Upload Files</a>
+                    <a class="clearbutton redbutton hidden">Clear Queue</a>
+                </div>
+            </div>
+            
+        </div>
+        <script>
+        $(document).ready(function(){
+                                        var x = $('#UID').val();
+                                        $('#hehe').append('<a class="addbutton greenbutton"> Add File <form enctype="multipart/form-data" method="post" action="http://expenseapp.domytacreturn.com.au/src/ajaxuploader.php?UID=' + x + '"> <input type="file" name="filedata"/> </form> </a>');
+
+        })
+        </script>
+    </body>
+</html>
