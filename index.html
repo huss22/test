@@ -1,16 +1,69 @@
+<!DOCTYPE html> 
 <html>
 <head>
 <script src = 'jquery.js'></script>
+
+</script>
 </head>
 <body>
-How do you feel today:
-    <select class = 'feeling'>
-    </select>
-</div>
-<script>
+<div>
 
+How do you feel today:
+    <select class = 'feeling'></select>
+    <form name = 'how' id = 'how'>
+    <div id = 'inputown' style = "display: none">
+    UID: <input id = 'UID' name = 'UID' type = 'text' value = 'TestUID' readonly></input>
+    Custom Feeling Here: <input id = 'cf' name = 'cf' type = 'text' value = ''></input>
+    <button type = 'submit'>Add Feeling</button>
+    </div>
+    <div class = 'result'></div>
+   </form>
+</div>
+<div id='fileupload'></div>
+<script>
 $.get( "http://expenseapp.domytaxreturn.com.au/Dropdown.php", function( data ) {
+	var x = $('#UID').val();
   $( ".feeling" ).html( data );
+  $(".feeling").append($('<optgroup label = "Custom Selects"></optgroup>').load('http://expenseapp.domytaxreturn.com.au/Useradded.php?UID=' + x));
+});
+$('.feeling').change(function () {
+		var x = $('.feeling').val();
+		if (x == 'addown') { 
+			$('#inputown').show();
+		} else { $('#inputown').hide();}
+
+}).change();
+</script>
+<script>
+$('#fileupload').load('fileupload.html');
+</script>
+<script>
+$(document).ready(function () {
+    $('#how').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url : "http://expenseapp.domytaxreturn.com.au/addfeeling.php",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (data) {
+                $(".result").html(data);
+                $.get( "http://expenseapp.domytaxreturn.com.au/Dropdown.php", function( data ) {
+				var x = $('#UID').val();
+  				$( ".feeling" ).html( data );
+  				$(".feeling").append($('<optgroup label = "Custom Selects"></optgroup>').load('http://expenseapp.domytaxreturn.com.au/Useradded.php?UID=' + x));
+  				var lo = $('#cf').val();
+  				console.log(lo);
+  				$('.feeling').val(lo);
+  				$('#inputown').hide();
+  				$('.result').fadeOut(5000);
+
+});
+            },
+            error: function (jXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    });
 });
 </script>
 </body>
