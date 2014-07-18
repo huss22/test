@@ -6,7 +6,24 @@
 </script>
 </head>
 <body>
-<div>
+<div id = 'currentuser'> You are currently logged in as: </div><a id = "logout" href = '#'>Logout!</a>
+<div id = 'logindiv'>
+<form id = 'login' name = 'login'>
+Username: <input type = 'text' id = 'username' name = 'username' placeholder = 'Username'/> </br>
+Password: <input type = 'password' id = 'passwordfield' name = 'passwordfield' placeholder = 'Passsword' />
+<button type = 'submit'>Log me In!</button>
+</form>
+Don't have an account? <button id = 'registerbtn'>Register Now!</button>
+</div>
+<div id = 'registerdiv' style = "display:none">
+<form id = 'register' name = 'register'>
+Username: <input type = 'text' id = 'registerusername' name = 'registerusername' placeholder = 'Username'/> </br>
+Password: <input type = 'password' id = 'registerpasswordfield' name = 'registerpasswordfield' placeholder = 'Passsword' />
+<button type = 'submit'>Register me!</button>
+</form>
+</div>
+<div id = 'failedlogin'></div>
+<div id = 'onlyshowafterlogin' style = "display:none">
 
 How do you feel today:
     <select class = 'feeling'></select>
@@ -18,7 +35,99 @@ How do you feel today:
     </div>
     <div class = 'result'></div>
    </form>
+<button id = 'showfileupload'>Upload a file!</button>
+<div id='fileupload' style = "display: none"></div>
 </div>
+<script>
+$(document).ready(function(){
+ $('#login').on('submit', function(e) {
+        e.preventDefault();
+       $.ajax({
+            url : "http://expenseapp.domytaxreturn.com.au/login.php",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (data) {
+              if (data == 'Successfully logged in!') {
+                alert(data);
+                $('#logindiv').slideUp();
+                $('#onlyshowafterlogin').slideDown();
+                var username = $('#username').val();
+                localStorage.setItem("UID", username);
+                $('#UID').val(localStorage.getItem("UID"));
+                 $('#currentuser').toggle().toggle().toggle();
+                 $('#logout').show();
+              }
+              else {
+
+                  alert(data);
+                  $('#failedlogin').append('data');
+              }
+              },
+            error: function (jXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    });
+});
+</script>
+<script>
+$(document).ready(function(){
+  $('#registerbtn').on('click', function(e) {
+      e.preventDefault();
+      $('#logindiv').slideUp();
+      $('#registerdiv').slideDown();
+  });
+ $('#register').on('submit', function(e) {
+        e.preventDefault();
+       $.ajax({
+            url : "http://expenseapp.domytaxreturn.com.au/register.php",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (data) {
+              if (data == 'Successfully Registered!') {
+                alert(data);
+                $('#registerdiv').slideUp();
+                $('#onlyshowafterlogin').slideDown();
+              }
+              else if (data == 'User Already Registered, please login') {
+                  alert(data);
+                  $('#registerdiv').slideUp();
+                  $('#logindiv').slideDown();
+
+              }
+
+              else {
+
+                  alert(data);
+              }
+              },
+            error: function (jXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    });
+});
+</script>
+<script>
+$(document).ready(function(){
+          var x = localStorage.getItem("UID");
+          $('#currentuser').append(x);
+          if (x !== null) { 
+            $('#onlyshowafterlogin').show(); 
+            $('#logindiv').hide();
+            $('#currentuser').toggle().toggle();
+
+          } else { $('#currentuser').hide();$('#logout').hide();}
+          $('#logout').on('click', function(){
+              localStorage.removeItem("UID");
+              $('#logout').hide();
+              $('#currentuser').hide();
+              $('#logindiv').show();
+              $('#onlyshowafterlogin').hide();
+          })
+})
+
+</script>
 <script>
 $.get( "http://expenseapp.domytaxreturn.com.au/Dropdown.php", function( data ) {
 	var x = $('#UID').val();
@@ -32,6 +141,15 @@ $('.feeling').change(function () {
 		} else { $('#inputown').hide();}
 
 }).change();
+</script>
+<script>
+$('#showfileupload').click(function(){
+
+    $('#fileupload').toggle();
+});
+$(document).ready(function () {
+$('#fileupload').load('fileupload.html');
+});
 </script>
 <script>
 $(document).ready(function () {
