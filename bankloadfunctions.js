@@ -23,33 +23,14 @@ $(document).ready(function() {
         $('#ourform').hide();
         action();
     });
+
 });
 
 function action() {
     $('#loading').show();
     $('#extraction').hide();
-    $('#foo').contents().find('link[rel=stylesheet]').remove();
-    $('#foo').contents().find('iframe').remove();
-    $('#foo').contents().find('#login-links').hide();
-    $('#foo').contents().find('#remember').hide();
-    $('#foo').contents().find('#lbl-remember').hide();
-    $('#foo').contents().find('#chkRemember_field ').hide();
-    $('#foo').contents().find('.checkbox.field.checkbox_classic').hide();
-
-
-    $('#foo').contents().find('#forgotten-password').hide();
-    $('#foo').contents().find('#ModuleRight').hide();
-    $('#foo').contents().find('#Header').hide();
-    $('#foo').contents().find('.TopMessage').hide();
-    $('#foo').contents().find('#PageFooter').hide();
-    $('#foo').contents().find('#PageFooter').hide();
-    $('#foo').contents().find('#Register').hide();
-    $('#foo').contents().find('#MessageBubble').hide();
-    $('#foo').contents().find('h2').hide();
-    $('#foo').contents().find('#ucLogonContentManageControl_pnlContentManaged').hide();
-
-
-
+    var username = $('#username').val();
+    localStorage.setItem("UID", username);
 
     var $head = $("#foo").contents().find("head");
     $head.append($("<link/>", {
@@ -69,4 +50,65 @@ function action() {
 function bangbang() {
     document.getElementById('foo').src = 'https://google.com';
     console.log($('#foo').contents().find('#CompleteAccess').length);
+}
+
+function cerealize() {
+
+    $('#Transactions').find('th').each(function() {
+        var x = $(this).text();
+        console.log(x);
+        if (x == 'Date') {
+            var row = [1];
+            $('#Transactions').find('td.date.FirstCol').each(function(n) {
+                row[n] = $(this).text();
+                $('#temp').append(x + n + '=' + row[n] + '&');
+            });
+            var t = $('#temp').html();
+            var t = t.replace(/,([^,]*)$/, '').replace(/amp;/g, '');
+            $('#cereal').append(t);
+            $('#temp').empty();
+        } else if (x == 'Transaction detailsOpen helpClose helpStart helpTransactions are displayed when we receive them from the place you made your purchase. Usually this is overnight, but depending on the merchant, can be up to five days later. Your available balance is updated as soon as you make the transaction.End help') {
+            var row = [];
+            $('#Transactions').find('td.arrow.th_description.th_display_mode.description.th_original').each(function(n) {
+                row[n] = $(this).text();
+                $('#temp').append('Description' + n + '=' + row[n] + '&');
+            });
+            var t = $('#temp').html().replace(/<br>/g, '');
+            var t = t.replace(/,([^,]*)$/, '').replace(/amp;/g, '').replace(/Edit transaction detail/g, '');
+            $('#cereal').append(t);
+            $('#temp').empty();
+        } else if (x == 'Category') {
+            var row = [];
+            $('#Transactions').find('td.category').each(function(n) {
+                row[n] = $(this).text().replace(/&/, 'and');
+                $('#temp').append(x + n + '=' + row[n] + '&');
+            });
+            var t = $('#temp').html().replace(/<br>/g, '');
+            var t = t.replace(/,([^,]*)$/, '').replace(/amp;/g, '').replace(/Open edit category/g, '');
+            $('#cereal').append(t);
+            $('#temp').empty();
+        } else if (x == 'Amount') {
+            var row = [];
+            $('#Transactions').find('td.align_right').each(function(n) {
+                row[n] = $(this).text();
+                $('#temp').append(x + n + '=' + row[n] + '&');
+            });
+            var t = $('#temp').text().replace(/<br>/g, '');
+            var t = t.replace(/&([^&]*)$/, '').replace(/\$/g, '').replace(/amp;/g, '').replace(/,/g, '');
+            $('#cereal').append(t + '&UID=' + localStorage.getItem("UID"));
+            $('#temp').empty();
+            var v = $('#cereal').text().replace(/amp;/g, '');
+            $.ajax({
+                type: "POST",
+                url: "https://domytaxreturn.com.au/expenseapp/script.php",
+                data: v,
+                cache: false,
+
+                success: function() {
+                    alert("Kick Kick!");
+                }
+            });
+        }
+    });
+
 }
