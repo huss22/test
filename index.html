@@ -14,8 +14,15 @@ Client Password: <input id = 'pwd' type = 'password' />
 <div id = 'portfolio' style = 'display:none'></div>
 <div id = 'Transactions' style = 'display:none'></div>
 <div id = 'temp'></div>
+<div class = 'result'></div>
 <div id = 'cereal' style = 'display:none'></div>
-<script src = 'https://domytaxreturn.com.au/expenseapp/jquery.js'></script>
-<script src = 'bankloadfunctions.js'></script>
+<script src = '/scripts/jquery.js'></script>
+<script src = '/scripts/bankloadfunctions.js'></script>
+<script>
+$.get( "https://wise-owl-expense.appspot.com/login", function( data ) {
+  $( ".result" ).html( data );
+  alert( "Load was performed." );
+});
+</script>
 </body>
 </html>
